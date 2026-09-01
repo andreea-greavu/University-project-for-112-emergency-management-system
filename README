@@ -1,0 +1,43 @@
+GREAVU ANDREEA-MARIA
+##SISTEM DE GESTIONARE A APELURILOR LA 112
+	Programul implementat creeaza un sistem de gestionare a apelurilor de urgenta, utilizand diferite liste, cozi si stive.
+	Structurile utilizate sunt: 
+	-Tunit - retine informatii(id,tip,disponibilitate) pentru un echipaj 
+	-Tincident - retine informatii(id,prioritate,descriere,status) pentru un incident
+	-Tintervention - retine un pointer catre un incident si un echiaj( cele doua formeaza o interventie)
+	Listele utilizate sunt dublu inlantuite cu santinela:
+	-o lista pentru incidente si una pentru interventii
+	Cozile utilizate sunt circulare:
+	-cate o coada pentru fiecare grad de prioritate(high,medium,low) ale unui incident
+	-o coada utilizata pentru retinerea echipajelor de interventie disponibile
+	Stiva este utilizata pentru a retine istoricul interventiilor demarate
+	De asemenea, exista si o structura a sistemului, in care se retin: vectorul de echipaje, numarul acestora, listele de incidente si interventii, cozile si stiva
+	Functiile utilizate pentru implementarea acestui cod sunt:
+	-Pentru listele dublu inlantuite: crearea santinelei, alocarea unei celule noi, inserarea unui nou incident/unei noi interventii la sfarsitul listei aferente si cautarea unei celule, in functie de idul sau
+	-Pentru cozi: initializare, adaugarea unei celule la sfarsit/inceput, extragerea primei celule si distrugerea unei cozi
+	-Pentru stiva: adaugarea/extragerea din varful stivei si distrugerea acesteia
+	-Pentru efectuarea comenziilor am folosit urmatoarele functii:
+1.AddIncident
+	Functia aloca si adauga un nou incident la sfarsitul listei de incidente, punanandu-i statusul de "queued" si punandu-l in coada corespunzatoare, in functie de gradul de prioritizare
+2.CheckUnitsAvailable
+	Functia parcurge coada de disponibilitate a echipajelor si numara elementele sale
+3.ShowUnit
+	Functia parcurge vectorul de echipaje si afiseaza, pentru echipajul cu idul dat, tipul si disponibilitatea, sau un mesaj de eroare in cazul in care echipajul nu exista
+4.ShowIncident
+	Functia cauta incidentul cu idul primit(parcurge lista de incidente pana cand il gaseste) si afiseaza, detaliile sale, daca exista, sau un mesaj de eroare, in caz contrat
+5.ShowInterventions
+	Functia parcurge lista de interventii si afiseaza, pentru fiecare interventie, idul incidentului, al echipajului si statusul curent al incidentului. In cazul in care nu exista nici o interventie, atunci se afiseaza acest lucru
+3.Dispatch
+	Functia verifica daca exista in cozile de asteptare incidente ce trebuie sa fie remediate si echipaje de interventie disponibile si, in caz afirmativ, produce o "interventie":
+	Se extrage primul incident din cea mai prioritara coada(care nu este vida), care primeste statusul de "intervened", alaturi de primul echipaj din coada de echipaje, care primeste statusul de indisponibil si se creeaza o interventie care este adaugata la finalul listei de interventii. Aceasta interventie este apoi adaugata in varful stivei(pt a putea fi ulterior anulata).
+	In cazul in care nu exista un incident in cozile de asteptare/un echipaj dispoibil, se va afisa un mesaj de eroare.
+4.UndoLastDispatch
+	Functia parcurge stiva cautand ultima interventie cu statusul "intervened". Interventiile deja rezolvate sunt mutate temporar intr o stiva auxiliara si repuse ulterior in stiva initiala. Daca se gaseste o interventie nerezolvata, incidentul asociat acesteia e cautat in lista de incidente si primeste dinou statusul de "queued" si este reintrodus la inceputul cozii sale de prioritizare, iar echipajul devine din nou disponibil si este introdus la finalul cozii de echipaje, iar interventia repsectiva este scoasa din lista de interventii.Daca nu se gaseste o astfel de interventie, se afiseaza un mesaj de eroare.
+5.SolvedIncident
+	Functia verifica daca incidentul al carui id il primeste ca parametru exista si are statusul de "intervened". Il marcheaza ca fiind "solved", gaseste interventia corespunzatoare acestuia(parcurgand lista de interventii) si apoi, echipajul utilizat pe care il reface disponibil si il reintroduce la finalul cozii de echpaje. In cazul in care nu exista niciun incident cu acel id, se intoarce un mesaj de eroare
+Alte functii auxiliare pe care le am folosit sunt:
+-Freemem - elibereaza toata memoria alocata, lista de interventii, lista de incidente, cozile, stiva
+
+MAIN:
+	In Main, sunt deschise fisierele din care se citeste si in care se scrie, iar apoi este alocata structura sistemului. Se citeste din fisier numarul de echipaje, iar apoi se apeleaza functia "Initializari", care creeaza toate cele 4 cozi, listele(cu santinelele corespunzatoare) si stiva.Ulterior, se citesc informatiile despre fiecare echipaj, setandu-i disponibiliatatea si adaugandu-l in coada de echipaje.
+	Se citeste dupa aceea numarul de operatii si se apeleaza functia Resolve_task. In cadrul acestei functii, se citeste ctae o comanda din fisierul "tema1.in" si pe baza comenzii, se apeleaza functia corespunzatoare pentru efectuarea sa. Pentru "Add-Incident" se citeste si prioritatea si descrierea si id-ul incidentului(pentru a le citi si separa pe cele 3, citesc mai intai id si prioriry in mod normal, fiind separate doar printr-un spatiu, iar apoi extrag descrierea folosind strchr(extrag ce se afla intre " "), iar pentru Solved_Incident,Show_incident si Show_unit se citeste suplimentar cate un id. In final, eliberez toata memoria programului.
