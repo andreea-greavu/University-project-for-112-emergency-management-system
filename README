@@ -21,7 +21,7 @@ GREAVU ANDREEA-MARIA
 1. AddIncident
 	The function allocates and adds a new incident at the end of the incident list, giving it the status "queued" and placing it in the corresponding queue, based
 	on its priority level
-2. CheckUnitsAvailable
+2. CheckUnitsAvailability
 	The function walks the crew availability queue and counts its elements
 3. ShowUnit
 	The function walks the crew vector and prints, for the crew with the given id, its type and availability, or an error message if the crew doesn't exist
